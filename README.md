@@ -8,7 +8,7 @@ Environment variables will be your best friend for this project!
 * **HBNB_MYSQL_DB**: the database name of your MySQL
 * **HBNB_TYPE_STORAGE**: the type of storage used. It can be “file” (using **FileStorage**) or db (using **DBStorage**)
 ## More Info
-[Progress image](https://s3.amazonaws.com/intranet-projects-files/concepts/74/hbnb_step2.png)
+![Progress image](https://s3.amazonaws.com/intranet-projects-files/concepts/74/hbnb_step2.png)
 <center> <h1>HBNB - The Console</h1> </center>
 
 This repository contains the initial stage of a student project to build a clone of the AirBnB website. This stage implements a backend interface, or console, to manage program data. Console commands allow the user to create, update, and destroy objects, as well as manage file storage. Using a system of JSON serialization/deserialization, storage is persistent between sessions.
