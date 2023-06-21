@@ -10,7 +10,7 @@ class FileStorage:
 
     def all(self, cls=None):
         """Returns a dictionary of models currently in storage"""
-        if cls is None:
+        if cls is None or isinstance(cls, str):
             return self.__objects
         cls_name = cls.__name__
         dct = {}
@@ -59,7 +59,7 @@ class FileStorage:
         ''' deletes the object obj from the attribute
             __objects if it's inside it
         '''
-        if obj is None:
-            return
-        obj_key = obj.to_dict()['__class__'] + '.' + obj.id
-        if obj_key in self.__objects.key
+        if obj is not None:
+            key = str(obj.__class__.__name__) + "." + str(obj.id)
+            FileStorage.__objects.pop(key, None)
+            self.save()
