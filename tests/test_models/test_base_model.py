@@ -1,11 +1,16 @@
 #!/usr/bin/python3
-""" """
+"""Tests for BaseModel """
+import sys
 from models.base_model import BaseModel
 import unittest
 import datetime
 from uuid import UUID
+from io import StringIO
 import json
 import os
+
+
+storage = getenv("HBNB_TYPE_STORAGE", "fs")
 
 
 class test_basemodel(unittest.TestCase):
@@ -19,13 +24,13 @@ class test_basemodel(unittest.TestCase):
 
     def setUp(self):
         """ """
-        pass
+        self.my_model = BaseModel()
+        self.my_model.name = "Mary Boss"
+        self.new = BaseModel()
 
     def tearDown(self):
-        try:
-            os.remove('file.json')
-        except:
-            pass
+        """ Tear down instance """
+        del self.my_model
 
     def test_default(self):
         """ """
@@ -97,3 +102,26 @@ class test_basemodel(unittest.TestCase):
         n = new.to_dict()
         new = BaseModel(**n)
         self.assertFalse(new.created_at == new.updated_at)
+
+        @unittest.skipIf(storage == "db", "Testing database storage only")
+    def test_save(self):
+        """ Checks that after updating the instance; the dates differ in the
+            updated_at attribute."""
+        old_update = self.new.updated_at
+        self.new.save()
+        self.assertNotEqual(self.new.updated_at, old_update)
+
+        @unittest.skipIf(storage != "db", "Testing if using DBStorage")
+    def test_basemodel_hasattr(self):
+        """ Checks Class attributes"""
+        self.assertTrue(hasattr(self.new, "id"))
+        self.assertTrue(hasattr(self.new, "created_at"))
+        self.assertTrue(hasattr(self.new, "updated_at"))
+
+        @unittest.skipIf(storage != "db", "Testing if using DBStorage")
+    def test_basemodel_attrtype(self):
+        """ Check its attributes type"""
+        new2 = BaseModel
+        self.assertFalse(isinstance(new2.id, str))
+        self.assertFalse(isinstance(new2.created_at, str))
+        self.assertFalse(isinstance(new2.updated_at, str))
