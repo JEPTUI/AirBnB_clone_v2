@@ -19,6 +19,8 @@ def do_pack():
         return filename
     except Exception as e:
         return None
+
+
 def do_deploy(archive_path):
     """
     creates and distributes an archive to your web servers
@@ -42,6 +44,8 @@ def do_deploy(archive_path):
         return True
     except Exception as e:
         return False
+
+
 def deploy():
     """
     creates and distributes an archive to your web servers
