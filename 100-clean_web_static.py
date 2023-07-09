@@ -2,48 +2,28 @@
 # creates and distributes an archive to your web servers
 import os.path
 from datetime import datetime
-from fabric.api import local, env, put, run
+from fabric.api import local, env, put, run, cd
 from time import strftime
+
+env.user = 'ubuntu'
 env.hosts = ["100.25.182.185", "54.237.33.235"]
 
 
-def do_pack():
+def do_clean(number=0):
     """
-    generates a .tgz archive from the contents of the web_static
+    Deletes out-of-date archives
     """
-    timenow = datetime.now().strftime("%Y%m%d%H%M%S")
-    try:
-        local("mkdir -p versions")
-        filename = "versions/web_static_{}.tgz".format(timenow)
-        local("tar -cvzf {} web_static/".format(filename))
-        return filename
-    except Exception as e:
-        return None
+    number = int(number)
+    if number < 1:
+        number = 1
+    number += 1
+    with cd('versions'):
+        # Delete unnecessary archives from the versions folder
+        run("ls -t | tail -n +{} | xargs rm -rf --".format(number))
 
-
-def do_deploy(archive_path):
-    """
-    creates and distributes an archive to your web servers
-    """
-    if os.path.isfile(archive_path) is False:
-        return False
-    try:
-        put(archive_path, "/tmp/")
-        filename = archive_path.split("/")[-1]
-        folder_name = "/data/web_static/releases/{}".format(
-                filename.split(".")[0])
-        run("mkdir -p {}".format(folder_name))
-        run("tar -xzf /tmp/{} -C {}".format(filename, folder_name))
-        run("rm /tmp/{}".format(filename))
-        run("mv {}web_static/* {}".format(filename, folder_name))
-        run("rm -rf {}web_static".format(folder_name))
-
-        run("rm -rf /data/web_static/current")
-
-        run("ln -s {} /data/web_static/current".format(folder_name))
-        return True
-    except Exception as e:
-        return False
+    with cd('/data/web_static/releases'):
+        # Delete unnecessary archives from the /data/web_static/releases
+        run("ls -t | tail -n +{} | xargs rm -rf --".format(number))
 
 
 def deploy():
@@ -54,14 +34,3 @@ def deploy():
     if archive_path is None:
         return False
     return do_deploy(archive_path)
-
-
-def do_clean(number=0):
-    if number == 0:
-        number = 1
-    with cd.local('./versions'):
-            local("ls -lt | tail -n +{} | rev | cut -f1 -d" " | rev | \
-            xargs -d '\n' rm".format(1 + number))
-    with cd('/data/web_static/releases/'):
-            run("ls -lt | tail -n +{} | rev | cut -f1 -d" " | rev | \
-            xargs -d '\n' rm".format(1 + number))
