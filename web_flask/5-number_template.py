@@ -35,7 +35,7 @@ def python_text(text="is cool"):
 
 
 @app.route('/number/<int:n>')
-def number(n):
+def number_if_int(n):
     """display “n is a number” only if n is an integer"""
     return "{} is a number".format(n)
 
@@ -43,7 +43,7 @@ def number(n):
 @app.route('/number_template/<int:n>')
 def html_if_int(n):
     """display a HTML page only if n is an integer"""
-    return render_template('5-number.html', n=n)
+    return render_template("5-number.html", n=n)
 
 
 if __name__ == "__main__":
