@@ -28,24 +28,22 @@ class DBStorage:
 
     def all(self, cls=None):
         """query on the current database session"""
-        db_dict = {}
+        from models import classes
 
-        if cls != "":
-            objs = self.__session.query(models.classes[cls]).all()
-            for obj in objs:
-                key = "{}.{}".format(obj.__class__.__name__, obj.id)
-                db_dict[key] = obj
-            return db_dict
+        objects = {}
+
+        if cls is None:
+            classes_list = list(classes.values())
         else:
-            for k, v in models.classes.items():
-                if k != "BaseModel":
-                    objs = self.__session.query(v).all()
-                    if len(objs) > 0:
-                        for obj in objs:
-                            key = "{}.{}".format(obj.__class__.__name__,
-                                                 obj.id)
-                            db_dict[key] = obj
-            return db_dict
+            classes_list = [cls]
+
+        for class_ in classes_list:
+            query_result = self.__session.query(class_).all()
+            for obj in query_result:
+                key = f"{obj.__class__.__name__}.{obj.id}"
+                objects[key] = obj
+
+        return objects
 
     def new(self, obj):
         """add the object to the current database session"""

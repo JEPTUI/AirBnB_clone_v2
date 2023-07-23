@@ -13,6 +13,7 @@ place_amenity = Table('place_amenity', Base.metadata,
                              ForeignKey("amenities.id"),
                              primary_key=True, nullable=False))
 
+
 class Place(BaseModel, Base):
     """ A place to stay """
     __tablename__ = "places"
@@ -27,8 +28,11 @@ class Place(BaseModel, Base):
     price_by_night = Column(Integer, default=0, nullable=False)
     latitude = Column(Float)
     longitude = Column(Float)
-    reviews = relationship("Review", backref="place",
-            cascade="all,delete, delete-orphan")
+    reviews = relationship(
+            "Review", backref="place", cascade="all,delete, delete-orphan")
+    amenities = relationship(
+            "Amenity", secondary=place_amenity,
+            viewonly=False, back_populates="place_amenities")
     amenity_ids = []
 
     if getenv("HBNB_TYPE_STORAGE", None) != "db":
