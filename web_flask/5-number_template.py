@@ -4,7 +4,7 @@ starts a Flask web application
 web application must be listening on 0.0.0.0, port 5000
 """
 
-from flask import Flask
+from flask import Flask, render_template
 app = Flask(__name__)
 app.url_map.strict_slashes = False
 
