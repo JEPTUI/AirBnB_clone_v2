@@ -27,7 +27,8 @@ def tear_down(self):
 
 if __name__ == "__main__":
     engine = create_engine(
-            'mysql://hbnb_dev:hbnb_dev@host:port/hbnb_dev_db', pool_pre_ping=True)
+            'mysql://hbnb_dev:hbnb_dev@host:port/hbnb_dev_db',
+            pool_pre_ping=True)
 
     session_factory = sessionmaker(bind=engine)
     Session = scoped_session(session_factory)
